@@ -1,0 +1,63 @@
+@startuml octant-general-architecture
+package "Backend" {
+
+    database "ObjectStore" {
+        interface Client
+        [Direct] <--- Client
+        [Informer] <--- Client
+        note as N2
+            Uses informers but falls back
+            when unable to access <i>Watch</i> verb.
+        end note
+    }
+
+    package "State Managers" as Managers {
+        interface "WS/HTTP Handlers" as Handlers
+        interface SetState
+        interface GetState
+        [Action]
+        [Plugin]
+        [Module]
+        [Content]
+        [Namespace]
+        [Filter]
+        [Terminal]
+    }
+
+    package "Modules" {
+        interface ContentResponse
+        [Overview]
+        [ClusterOverview]
+        [Workloads]
+
+        package "Response" {
+            [Generators]
+            [Describers]
+            [Printers]
+            [ObjectStatus]
+        }
+    }
+    note top of Modules
+        These are the default views of Octant
+    end note
+
+    package WebHandlers {
+        interface UserClient
+        [HTTP]
+        [WS]
+    }
+}
+
+UserClient --> Handlers
+Handlers --> SetState
+
+Describers ---> Client
+
+Printers <-- ObjectStatus
+Describers <-- Printers
+Describers --> GetState
+Generators <-- Describers
+ContentResponse <-- Generators
+Handlers <-----> ContentResponse
+
+@enduml

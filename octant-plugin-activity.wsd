@@ -1,0 +1,43 @@
+@startuml octant-plugin-activity
+start
+while (Discover Plugins) is (found plugin)
+    :Load Plugin;
+    if (JavaScript plugin?) then (Yes)
+    :Create JavaScript Runtime;
+    else (No)
+        :Create go-plugin gRPC Runtime;
+    endif
+    if (Has Actions) then (Yes)
+        :Register Action Handler;
+    endif
+    if (Is Module) then (Yes)
+        :Register Module;
+        (M)
+        detach
+        (M)
+        :Call Navigation Handler;
+        while (Module) is (match ContentPath)
+            :Call Content Handler;
+        endwhile
+        :Skip;
+        detach
+    endif
+    :Register Plugin;
+
+    :Start;
+    (R)
+    detach
+    (R)
+    while (Plugin Runner) is (for plugins)
+        :Get Plugin;
+        :Check Metadata for Request Type;
+        if (Supports Request) then (yes)
+            :Call Request Handler;
+            :Content Response;
+        else (No)
+            :Skip;
+        endif
+    endwhile
+endwhile
+stop
+@enduml
