@@ -48,16 +48,16 @@ package "Backend" {
     }
 }
 
-UserClient --> Handlers
+UserClient <--> Handlers
 Handlers --> SetState
 
 Describers ---> Client
 
-Printers <-- ObjectStatus
-Describers <-- Printers
+Printers --> ObjectStatus
+Describers --> Printers
 Describers --> GetState
 Generators <-- Describers
 ContentResponse <-- Generators
-Handlers <-----> ContentResponse
+Handlers -----> ContentResponse
 
 @enduml
