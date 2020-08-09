@@ -1,0 +1,31 @@
+@startuml
+
+title Octant Go plugin Print Request
+skinparam BoxPadding 10
+
+box "Octant" #LightGreen
+participant "Print"
+end box
+
+box "Plugin Manager"
+participant "Plugin Client"
+end box
+
+box "go-plugin" #LightBlue
+participant "Server"
+end box
+
+box "User Plugin" #LightCoral
+participant "Plugin Server"
+end box
+
+"Plugin Server" <-> "Server" : Exec/Serve
+"Server" -> "Plugin Client" : Connection Details
+
+"Print" -> "Plugin Client" ++ : PrintRequest
+
+"Plugin Client" -> "Plugin Server"
+"Plugin Server" -> "Plugin Client"
+
+return PrintResponse
+@enduml
